@@ -1,18 +1,18 @@
 import './bootstrap';
 import '../css/app.css'
+import "bootstrap/dist/css/bootstrap.min.css"
 
 import React from 'react'
-// import { Route, Routes } from 'react-router-dom';
 import {
-    createBrowserRouter,
-    createRoutesFromElements,
+    createBrowserRouter as Router,
+    createRoutesFromElements as Elements,
     Route,
     RouterProvider,
-  } from "react-router-dom";
+} from "react-router-dom";
 import { createRoot } from 'react-dom/client';
 
-import Join from './components/Join'
-import Chat from './components/Chat'
+import Login from './components/Auth/Login'
+import Chat from './components/Chat/Chat'
 
 // const App = () => {
 //     <Routes>
@@ -21,13 +21,13 @@ import Chat from './components/Chat'
 //     </Routes>
 // }
 
-const router = createBrowserRouter(
-    createRoutesFromElements(
-        <Route path="/" exact element={<Join />}>
+const router = Router(
+    Elements(
+        <Route path="/" exact element={<Login />}>
             <Route path="dashboard" element={<Chat />} />
         </Route>
     )
-  );
+);
 
 createRoot(document.getElementById('myApp')).render(     
     <React.StrictMode>
