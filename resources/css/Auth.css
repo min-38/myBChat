@@ -86,16 +86,16 @@
         padding: 35px;
     }
 }
-.login-wrapper {
+.auth-wrapper {
     width: 300px;
     max-width: 100%;
 }
 @media (max-width: 575px) {
-    .login-wrapper {
+    .auth-wrapper {
         width: 100%;
     }
 }
-.login-wrapper .form-control {
+.auth-wrapper .form-control {
     border: 0;
     border-bottom: 1px solid #e7e7e7;
     border-radius: 0;
@@ -104,19 +104,19 @@
     padding: 15px 10px;
     margin-bottom: 7px;
 }
-.login-wrapper .form-control::-webkit-input-placeholder {
+.auth-wrapper .form-control::-webkit-input-placeholder {
     color: #b0adad;
 }
-.login-wrapper .form-control::-moz-placeholder {
+.auth-wrapper .form-control::-moz-placeholder {
     color: #b0adad;
 }
-.login-wrapper .form-control:-ms-input-placeholder {
+.auth-wrapper .form-control:-ms-input-placeholder {
     color: #b0adad;
 }
-.login-wrapper .form-control::-ms-input-placeholder {
+.auth-wrapper .form-control::-ms-input-placeholder {
     color: #b0adad;
 }
-.login-wrapper .form-control::placeholder {
+.auth-wrapper .form-control::placeholder {
     color: #b0adad;
 }
 .login-title {
@@ -134,8 +134,27 @@
 }
 .login-btn:hover {
     border: 1px solid #000;
-    background-color: transparent;
+    /* background-color: transparent; */
+    background-color: #eaeaea;
     color: #000;
+}
+.signup-btn {
+    padding: 13px 30px;
+    background-color: #000;
+    border-radius: 0;
+    font-size: 20px;
+    font-weight: bold;
+    color: #fff;
+    width: 100%;
+}
+.signup-btn:hover {
+    border: 1px solid #000;
+    /* background-color: transparent; */
+    background-color: #eaeaea;
+    color: #000;
+}
+.RequiredInput {
+    color: rgb(191, 44, 44);
 }
 .forgot-password-link {
     font-size: 14px;
