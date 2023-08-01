@@ -1,38 +1,21 @@
+import React, { Component } from "react";
+import { createRoot } from 'react-dom/client';
+import { RouterProvider } from "react-router-dom";
+import router from "./router";
+
 import './bootstrap';
 import '../css/app.css'
 
-import React from 'react'
-// import { Route, Routes } from 'react-router-dom';
-import {
-    createBrowserRouter,
-    createRoutesFromElements,
-    Route,
-    RouterProvider,
-  } from "react-router-dom";
-import { createRoot } from 'react-dom/client';
+class App extends Component {
+    render() {
+        return(
+            <React.StrictMode>
+                <RouterProvider router={router} />
+            </React.StrictMode>
+        );
+    }
+}
 
-import Join from './components/Join'
-import Chat from './components/Chat'
-
-// const App = () => {
-//     <Routes>
-//         <Route path="/" element={<Join />} />
-//         <Route path="about" element={<Chat />} />
-//     </Routes>
-// }
-
-const router = createBrowserRouter(
-    createRoutesFromElements(
-        <Route path="/" exact element={<Join />}>
-            <Route path="dashboard" element={<Chat />} />
-        </Route>
-    )
-  );
-
-createRoot(document.getElementById('myApp')).render(     
-    <React.StrictMode>
-        <RouterProvider router={router} />
-    </React.StrictMode>,
+createRoot(document.getElementById('app')).render(     
+    <App />
 );
-
-export default App
