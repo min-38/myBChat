@@ -4,3 +4,7 @@ body {
 h1 > a {
     text-decoration:none;
 }
+
+.active {
+    display: block;
+}

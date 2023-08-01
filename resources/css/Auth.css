@@ -1,5 +1,7 @@
 .intro-section {
-    background-color: #080808;
+    background: #114357;  /* fallback for old browsers */
+    background: -webkit-linear-gradient(to right, #F29492, #114357);  /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(to right, #F29492, #114357); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
     padding: 75px 95px;
     min-height: 100vh;
     display: -webkit-box;
@@ -199,4 +201,15 @@
 .login-wrapper-footer-text {
     font-size: 14px;
     text-align: center;
+}
+textarea:invalid[focused='true'] ~ span.error-msg,
+input:invalid[focused='true'] ~ span.error-msg {
+    display: block;
+    font-size: 12px;
+    color:red;
+}
+
+input:invalid[focused='true'], 
+textarea:invalid[focused='true'] {
+    border: 1px solid red;
 }
