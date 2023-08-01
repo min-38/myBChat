@@ -1,19 +1,10 @@
-import React, { Component, useState ,useEffect } from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import ReactDOM from 'react-dom';
-import FlashMessage from 'react-flash-message';
+import axios from "axios"
 import Auth from "./Auth";
 
 const SignUp = () => {
-    const [Email, setEmail] = useState("");
-    const [Nickname, setNickname] = useState("");
-    const [Name, setName] = useState("");
-    const [Phone, setPhone] = useState("");
-    const [Country, setCountry] = useState("");
-    const [Gender, setGender] = useState("");
-    const [Password, setPassword] = useState("");
-    const [ConfirmPassword, setConfirmPassword] = useState("");
-
     const [formData, setFormData] = useState({
         email: '',
         name: '',
@@ -27,17 +18,67 @@ const SignUp = () => {
 
     const onSubmit = (event) => {
         event.preventDefault();
-        //Reset form
-        setFormData({
-            email: '',
-            name: '',
-            password: '',
-            password_confirm: '',
-            phone: '',
-            gender: '',
-            country: '',
-            agree: false,
-        });
+
+        axios.post("/api/auth/signup", formData)
+            .then(response => {
+                return response;
+            }).then(json => {
+                if (json.data.success) {
+                    let userData = {
+                        id: json.data.id,
+                        name: json.data.name,
+                        email: json.data.email,
+                        activation_token: json.data.activation_token,
+                    };
+                    
+                    let appState = {
+                        isRegistered: true,
+                        user: userData
+                    };
+                    localStorage["appState"] = JSON.stringify(appState);
+                    this.setState({
+                        isRegistered: appState.isRegistered,
+                        user: appState.user
+                    });
+                } else {
+                    alert(`Our System Failed To Register Your Account!`);
+                }
+            }).catch(error => {if (error.response) {
+                // The request was made and the server responded with a status code that falls out of the range of 2xx
+                let err = error.response.data;
+                this.setState({
+                    error: err.message,
+                    errorMessage: err.errors,
+                    formSubmitting: false
+                })
+            }
+            else if (error.request) {
+                // The request was made but no response was received `error.request` is an instance of XMLHttpRequest in the browser and an instance of http.ClientRequest in node.js
+                let err = error.request;
+                this.setState({
+                    error: err,
+                    formSubmitting: false
+                })
+            } else {
+                 // Something happened in setting up the request that triggered an Error
+                let err = error.message;
+                this.setState({
+                    error: err,
+                    formSubmitting: false
+                })
+            }
+        }).finally(this.setState({error: ''}));
+        // //Reset form
+        // setFormData({
+        //     email: '',
+        //     name: '',
+        //     password: '',
+        //     password_confirm: '',
+        //     phone: '',
+        //     gender: '',
+        //     country: '',
+        //     agree: false,
+        // });
     };
 
     const handleChange = (event) => {
@@ -50,47 +91,9 @@ const SignUp = () => {
         });
     };
 
-    const onEmailHandler = (event) => {
-        const value = event.currentTarget.value;
-        if(isValidEmail(value)) {
-            setEmail(event.currentTarget.value)
-        } else {
-            setValidErrorView("emailForm", "이메일 형식과 맞지 않습니다");
-            setEmail("")
-        }
-    }
-
-    const onNameHandler = (event) => {
-        setName(event.currentTarget.value)
-    }
-
-    const onNicknameHandler = (event) => {
-        setNickname(event.currentTarget.value)
-    }
-
-    const onPasswordHandler = (event) => {
-        setPassword(event.currentTarget.value)
-    }
-
-    const onconfirmPasswordHandler = (event) => {
-        setconfirmPassword(event.currentTarget.value)
-    }
-
-    const onPhoneHandler = (event) => {
-        setPhone(event.currentTarget.value)
-    }
-
-    const onGenderHandler = (event) => {
-        setGender(event.currentTarget.value)
-    }
-
-    const onCountryHandler = (event) => {
-        setCountry(event.currentTarget.value)
-    }
-
     const handleSubmit = (e) => {
         e.preventDefault();
-        this.setState({formSubmitting: true});
+
         ReactDOM.findDOMNode(this).scrollIntoView();
         let userData = this.state.user;
         axios.post("/api/auth/signup", userData)
@@ -147,7 +150,7 @@ const SignUp = () => {
     return (
         <div className="auth-wrapper signup-wrapper">
             <h2 className="login-title">Sign Up</h2>
-            <form action="#!" onSubmit={(e) => handleSubmit(e)}>
+            <form action="#!" onSubmit={(e) => onSubmit(e)}>
                 <div id="emailForm" className="form-group">
                     <label htmlFor="email" className="sr-only">Email <span className="RequiredInput">*</span></label>
                     <input
@@ -466,7 +469,7 @@ const SignUp = () => {
                     </select>
                 </div>
                 <div className="justify-content-between align-items-center mb-5">
-                    <input name="signup" id="signup" className="btn signup-btn" type="button" value="SignUp"></input>    
+                    <input id="signup" className="btn signup-btn" name="signup"  type="submit" value="SignUp"></input>    
                 </div>
             </form>           
             <p className="login-wrapper-footer-text">Already have account? <Link to="/login" className="text-reset">Login here</Link></p>

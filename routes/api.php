@@ -13,7 +13,11 @@ use Illuminate\Support\Facades\Route;
 | be assigned to the "api" middleware group. Make something great!
 |
 */
-
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+Route::group(['namespace' => 'App\Http\Controllers'], function()
+{   
+    Route::group(['middleware' => ['guest']], function() {
+        Route::prefix('/auth')->group(function (){
+            Route::post('/signup', 'AuthController@SignUp');
+        });
+    });
 });
