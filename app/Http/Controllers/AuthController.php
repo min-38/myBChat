@@ -23,7 +23,7 @@ class AuthController extends Controller
             // 회원가입 성공 시
             return response()->json(array(
                 'success' => true,
-                'msg'   => "회원가입이 되셨습니다. 로그인해주세요.",
+                'message'   => "회원가입이 되셨습니다.\n로그인해주세요.",
                 'redirectUrl'   => "/login",
             ));
         }

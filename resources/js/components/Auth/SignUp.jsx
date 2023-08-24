@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import ReactDOM from 'react-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import axios from "axios"
-import Auth from "./Auth";
+
+const navigate = useNavigate();
 
 const SignUp = () => {
     const [formData, setFormData] = useState({
@@ -19,67 +19,39 @@ const SignUp = () => {
     const onSubmit = (event) => {
         event.preventDefault();
 
-        axios.post("/api/auth/signup", formData)
-            .then(response => {
-                return response;
-            }).then(json => {
-                if (json.data.success) {
-                    let userData = {
-                        id: json.data.id,
-                        name: json.data.name,
-                        email: json.data.email,
-                        activation_token: json.data.activation_token,
-                    };
-                    
-                    let appState = {
-                        isRegistered: true,
-                        user: userData
-                    };
-                    localStorage["appState"] = JSON.stringify(appState);
-                    this.setState({
-                        isRegistered: appState.isRegistered,
-                        user: appState.user
-                    });
-                } else {
-                    console.log(`Our System Failed To Register Your Account!`);
-                }
-            }).catch(error => {if (error.response) {
-                // The request was made and the server responded with a status code that falls out of the range of 2xx
-                let err = error.response.data;
-                this.setState({
-                    error: err.message,
-                    errorMessage: err.errors,
-                    formSubmitting: false
+        return new Promise((resolve, reject) => {
+            axios.post("/api/auth/signup", formData)
+                .then(json => {
+                    if (json.data.success) {
+                        alert(json.data.message);
+                        navigate("/login",  { replace: true });
+                    } else {
+                        console.log(`Our System Failed To Register Your Account!`);
+                    }
                 })
-            }
-            else if (error.request) {
-                // The request was made but no response was received `error.request` is an instance of XMLHttpRequest in the browser and an instance of http.ClientRequest in node.js
-                let err = error.request;
-                this.setState({
-                    error: err,
-                    formSubmitting: false
+                .catch(error => {
+                    switch(error.response.status) {
+                        case 422:
+                            handleValidation(error.response.data);
+                            break;
+                        case 500:
+                            alert("Sign Up Failed!\nTry Again...");
+                            break;
+                    }
                 })
-            } else {
-                 // Something happened in setting up the request that triggered an Error
-                let err = error.message;
-                this.setState({
-                    error: err,
-                    formSubmitting: false
-                })
-            }
-        }).finally(this.setState({error: ''}));
-        // //Reset form
-        // setFormData({
-        //     email: '',
-        //     name: '',
-        //     password: '',
-        //     password_confirm: '',
-        //     phone: '',
-        //     gender: '',
-        //     country: '',
-        //     agree: false,
-        // });
+                .finally(
+                    //
+                );
+        })
     };
+
+    const handleValidation = (data) => {
+        const json = data.errors;
+        Object.keys(json).map((item, index) => {
+            console.log(json);
+            console.log(index);
+        })
+    }
 
     const handleChange = (event) => {
         const { name, value, type } = event.target;
@@ -90,62 +62,6 @@ const SignUp = () => {
             [name]: isCheckbox ? event.target.checked : value,
         });
     };
-
-    const handleSubmit = (e) => {
-        e.preventDefault();
-
-        ReactDOM.findDOMNode(this).scrollIntoView();
-        let userData = this.state.user;
-        axios.post("/api/auth/signup", userData)
-            .then(response => {
-                return response;
-            }).then(json => {
-                if (json.data.success) {
-                    let userData = {
-                        id: json.data.id,
-                        name: json.data.name,
-                        email: json.data.email,
-                        activation_token: json.data.activation_token,
-                    };
-                    
-                    let appState = {
-                        isRegistered: true,
-                        user: userData
-                    };
-                    localStorage["appState"] = JSON.stringify(appState);
-                    this.setState({
-                        isRegistered: appState.isRegistered,
-                        user: appState.user
-                    });
-                } else {
-                    alert(`Our System Failed To Register Your Account!`);
-                }
-            }).catch(error => {if (error.response) {
-                // The request was made and the server responded with a status code that falls out of the range of 2xx
-                let err = error.response.data;
-                this.setState({
-                    error: err.message,
-                    errorMessage: err.errors,
-                    formSubmitting: false
-                })
-            }
-            else if (error.request) {
-                // The request was made but no response was received `error.request` is an instance of XMLHttpRequest in the browser and an instance of http.ClientRequest in node.js
-                let err = error.request;
-                this.setState({
-                    error: err,
-                    formSubmitting: false
-                })
-            } else {
-                 // Something happened in setting up the request that triggered an Error
-                let err = error.message;
-                this.setState({
-                    error: err,
-                    formSubmitting: false
-                })
-            }
-        }).finally(this.setState({error: ''}));
-    }
 
     return (
         <div className="auth-wrapper signup-wrapper">
@@ -160,10 +76,8 @@ const SignUp = () => {
                         name="email"
                         placeholder='Email'
                         onChange={handleChange}
-                        onBlur={Auth.onHandleFocus}
-                        focused={Auth.focused}
                     />
-                    <span className="error-msg">{Auth.errorMessage}</span>
+                    <span className="error-msg"></span>
                 </div>
                 <div className="form-group">
                     <label htmlFor="name" className="sr-only">Name <span className="RequiredInput">*</span></label>
@@ -212,15 +126,15 @@ const SignUp = () => {
                 </div>
                 <div className="form-group">
                     <label htmlFor="gender" className="sr-only">Gender <span className="RequiredInput">*</span></label>
-                    <select id="gender" className="form-select" name="gender" onChange={handleChange} >
+                    <select id="gender" className="form-select" name="gender" onChange={handleChange} defaultValue="">
                         <option value="" disabled>--- SELECT GENDER ---</option>
-                        <option value="male">Male</option>
-                        <option value="female">Female</option>
+                        <option value="0">Male</option>
+                        <option value="1">Female</option>
                     </select>
                 </div>
                 <div className="form-group  mb-3">
                     <label htmlFor="country" className="sr-only">Country <span className="RequiredInput">*</span></label>
-                    <select id="country" className="form-select" name="country" onChange={handleChange} >
+                    <select id="country" className="form-select" name="country" onChange={handleChange} defaultValue="">
                         <option value="" disabled>--- SELECT COUNTRY ---</option>
                         <option value="Afghanistan">Afghanistan</option>
                         <option value="Åland Islands">Åland Islands</option>

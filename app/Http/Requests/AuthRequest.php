@@ -23,9 +23,9 @@ class AuthRequest extends FormRequest
     {
         return [
             'email' => 'required|email:rfc,dns|unique:users,email',
-            'name' => 'required|unique:users,name|between:2,10',
+            'name' => 'required|between:2,10',
             'password' => 'required|regex:/^(?=.*[a-zA-Z])(?=.*[!@#$%^*+=-])(?=.*[0-9]).{8,16}$/|min:8',
-            'password_confirmation' => 'required|same:password',
+            'password_confirm' => 'required|same:password',
             'phone' => 'required|regex:/^01([016789]?)-?([0-9]{3,4})-?([0-9]{4})$/|min:11|unique:users,phone',
             'gender' => 'required',
             'country' => 'required',
@@ -48,7 +48,7 @@ class AuthRequest extends FormRequest
             'name.unique' => 'This name already exists.',
             'password.required' => 'Please enter your password.',
             'password' => 'Must contain at least 8 alphanumeric characters, numbers, and special characters.',
-            'password_confirmation.required' => 'Please enter your password.',
+            'password_confirm.required' => 'Please enter your password.',
             'password.same' => 'Passwords do not match.',
             'phone.requried' => 'Please enter your cell phone number.',
             'phone.unique' => 'This is a registered phone number.',
